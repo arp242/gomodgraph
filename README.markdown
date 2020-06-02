@@ -14,12 +14,14 @@ Take the output of `go mod graph` and print a nicely indented graph:
 
     $ go mod graph | gomodgraph | head -n10
     zgo.at/goatcounter
-            github.com/PuerkitoBio/goquery
-                    github.com/andybalholm/cascadia
-                            golang.org/x/net
-                                    golang.org/x/crypto
-                    golang.org/x/net
-                            golang.org/x/crypto
-            github.com/arp242/geoip2-golang
-                    github.com/arp242/maxminddb-golang
-            github.com/jmoiron/sqlx
+        github.com/PuerkitoBio/goquery
+            github.com/andybalholm/cascadia
+                golang.org/x/net
+                    golang.org/x/crypto
+                        golang.org/x/sys
+                    golang.org/x/sys
+                    golang.org/x/text
+            golang.org/x/net
+                golang.org/x/crypto
+
+Just makes it easier to see "why is this package included?"
