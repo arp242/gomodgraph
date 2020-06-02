@@ -71,6 +71,8 @@ func printpkg(p string, packages map[string][]string, i int, parent string) {
 		_, ok := packages[d]
 		if ok {
 			printpkg(d, packages, i+1, p)
+		} else {
+			fmt.Printf("%s%s\n", strings.Repeat(indent, i+1), d)
 		}
 	}
 }
