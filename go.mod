@@ -1,8 +1,8 @@
-module arp242.net/gomodgraph
+module zgo.at/gomodgraph
 
 go 1.13
 
 require (
-	zgo.at/zli v0.0.0-20200602050209-b466f6d917da
-	zgo.at/zstd v0.0.0-20200602040707-aaf6806a6bf5
+	zgo.at/zli v0.0.0-20211017202653-137d7cc21dec
+	zgo.at/zstd v0.0.0-20211017205211-017273d7d29c
 )

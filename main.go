@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"os"
 	"strings"
 
 	"zgo.at/zli"
@@ -11,10 +12,11 @@ import (
 )
 
 func main() {
-	fp, err := zli.FileOrInput(zos.Arg(1))
-	if err != nil {
-		zli.Fatal(err)
-	}
+	showVersion := len(os.Args) > 1
+	os.Args = []string{"x"}
+
+	fp, err := zli.InputOrFile(zos.Arg(1), false)
+	zli.F(err)
 	defer fp.Close()
 	scan := bufio.NewScanner(fp)
 
@@ -26,11 +28,18 @@ func main() {
 		line := scan.Text()
 		s := strings.Split(line, " ")
 		if len(s) != 2 {
-			zli.Fatal("malformed line: %q", line)
+			zli.Fatalf("malformed line: %q", line)
 		}
 
-		pkg := strings.Split(s[0], "@")[0]
-		dep := strings.Split(s[1], "@")[0]
+		// TODO: abbrev version in case it's not a tag
+		var pkg, dep string
+		if showVersion {
+			pkg = strings.Replace(s[0], "@", " ", -1)
+			dep = strings.Replace(s[1], "@", " ", -1)
+		} else {
+			pkg = strings.Split(s[0], "@")[0]
+			dep = strings.Split(s[1], "@")[0]
+		}
 
 		_, ok := packages[pkg]
 		if !ok {
@@ -39,7 +48,7 @@ func main() {
 		packages[pkg] = append(packages[pkg], dep)
 	}
 	if err := scan.Err(); err != nil {
-		zli.Fatal(err)
+		zli.F(err)
 	}
 	if len(order) == 0 {
 		return
@@ -63,6 +72,22 @@ const indent = "\t"
 func printpkg(p string, packages map[string][]string, i int, parent string) {
 	fmt.Printf("%s%s\n", strings.Repeat(indent, i), p)
 	for _, d := range packages[p] {
+		/*
+		   golang.org/x/text
+		   	golang.org/x/tools
+		   		github.com/yuin/goldmark
+		   		golang.org/x/mod
+		   			golang.org/x/crypto
+		   			golang.org/x/net
+		   				golang.org/x/sys
+		   				golang.org/x/term
+		   					golang.org/x/sys
+		   				golang.org/x/text
+		*/
+		if strings.HasPrefix(d, "golang.org/x/") {
+			continue
+		}
+
 		// x/net depends on x/crypto which depends on x/net
 		if d == parent {
 			continue

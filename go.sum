@@ -1,5 +1,8 @@
-zgo.at/zli v0.0.0-20200602050209-b466f6d917da h1:k01vY2nFxwW0AKnmbJIbJ+SDSv4XoJtSdBA+VH+7HUo=
-zgo.at/zli v0.0.0-20200602050209-b466f6d917da/go.mod h1:HLAc12TjNGT+VRXr76JnsNE3pbooQtwKWhX+RlDjQ2Y=
-zgo.at/zstd v0.0.0-20200602040707-aaf6806a6bf5 h1:pP0ZXWWkzwPZkWs6/L07XPB3AL4ny3w7CsMeqCDr+4s=
-zgo.at/zstd v0.0.0-20200602040707-aaf6806a6bf5/go.mod h1:wSF/3tBbAJVo+RYk5CTMmSN2xxyy4C+qTb5fN4WP9iA=
-zgo.at/ztest v0.0.0-20200316134318-cfad86d80b41/go.mod h1:xGKONSdBgBNBcHRbi+yY9xFSre7ip8gRsQBS9QW/J2I=
+golang.org/x/sys v0.0.0-20201119102817-f84b799fce68 h1:nxC68pudNYkKU6jWhgrqdreuFiOQWj1Fs7T3VrH4Pjw=
+golang.org/x/sys v0.0.0-20201119102817-f84b799fce68/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/term v0.0.0-20210317153231-de623e64d2a6 h1:EC6+IGYTjPpRfv9a2b/6Puw0W+hLtAhkV1tPsXhutqs=
+golang.org/x/term v0.0.0-20210317153231-de623e64d2a6/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
+zgo.at/zli v0.0.0-20211017202653-137d7cc21dec h1:jYg65WN0BJCM4V9jQ7C40vU+7OGHgUXOORcxtH+7Mmg=
+zgo.at/zli v0.0.0-20211017202653-137d7cc21dec/go.mod h1:pWkBHZ5qoEmvSDbFYdQMAKaRMEuAtdUKb21k/OOYOJw=
+zgo.at/zstd v0.0.0-20211017205211-017273d7d29c h1:Tn/vQ0YyXVbf6RWMuUQdHLNo0WWxbfHjIXlQb7x2xwQ=
+zgo.at/zstd v0.0.0-20211017205211-017273d7d29c/go.mod h1:sQqrTxBwKW0nlwcOg9RxXB8ikY+NBciJnJRPOq/gEuY=
