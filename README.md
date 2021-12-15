@@ -1,27 +1,37 @@
 Take the output of `go mod graph` and print a nicely indented graph:
 
-    $ go mod graph | head -n10
-    zgo.at/goatcounter github.com/PuerkitoBio/goquery@v1.5.1
-    zgo.at/goatcounter github.com/arp242/geoip2-golang@v1.4.0
-    zgo.at/goatcounter github.com/go-chi/chi@v4.1.1+incompatible
-    zgo.at/goatcounter github.com/jmoiron/sqlx@v1.2.0
-    zgo.at/goatcounter github.com/lib/pq@v1.5.2
-    zgo.at/goatcounter github.com/mattn/go-sqlite3@v2.0.3+incompatible
-    zgo.at/goatcounter github.com/monoculum/formam@v0.0.0-20200527175922-6f3cce7a46cf
-    zgo.at/goatcounter github.com/teamwork/reload@v1.3.2
-    zgo.at/goatcounter golang.org/x/crypto@v0.0.0-20200510223506-06a226fb4e37
-    zgo.at/goatcounter golang.org/x/sync@v0.0.0-20200317015054-43a5402ce75a
+    % go mod graph | head -n5
+    zgo.at/goatcounter/v2 code.soquee.net/otp@v0.0.1
+    zgo.at/goatcounter/v2 github.com/BurntSushi/toml@v0.4.1
+    zgo.at/goatcounter/v2 github.com/PuerkitoBio/goquery@v1.8.0
+    zgo.at/goatcounter/v2 github.com/andybalholm/cascadia@v1.3.1
+    zgo.at/goatcounter/v2 github.com/bmatcuk/doublestar/v3@v3.0.0
 
-    $ go mod graph | gomodgraph | head -n10
-    zgo.at/goatcounter
-        github.com/PuerkitoBio/goquery
+    % go mod graph | gomodgraph | head -n10
+    zgo.at/goatcounter/v2
+            code.soquee.net/otp
+            github.com/BurntSushi/toml
+            github.com/PuerkitoBio/goquery
+                    github.com/andybalholm/cascadia
+                            golang.org/x/net
+                    golang.org/x/net
             github.com/andybalholm/cascadia
-                golang.org/x/net
-                    golang.org/x/crypto
-                        golang.org/x/sys
-                    golang.org/x/sys
-                    golang.org/x/text
-            golang.org/x/net
-                golang.org/x/crypto
+                    golang.org/x/net
+            github.com/bmatcuk/doublestar/v3
+
+
+Use `-v` to print the version too, and `-d` to set the maximum depth:
+
+    % go mod graph | gomodgraph -v -d 2 | head -n10
+    zgo.at/goatcounter/v2
+            code.soquee.net/otp v0.0.1
+            github.com/BurntSushi/toml v0.4.1
+            github.com/PuerkitoBio/goquery v1.8.0
+                    golang.org/x/net v0.0.0-20210916014120-12bc252f5db8
+            github.com/andybalholm/cascadia v1.3.1
+                    golang.org/x/net v0.0.0-20210916014120-12bc252f5db8
+            github.com/bmatcuk/doublestar/v3 v3.0.0
+            github.com/boombuler/barcode v1.0.1
+            github.com/fsnotify/fsnotify v1.4.9
 
 Just makes it easier to see "why is this package included?"

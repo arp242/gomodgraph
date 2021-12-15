@@ -7,15 +7,39 @@ import (
 	"strings"
 
 	"zgo.at/zli"
-	"zgo.at/zstd/zos"
 	"zgo.at/zstd/zstring"
 )
 
-func main() {
-	showVersion := len(os.Args) > 1
-	os.Args = []string{"x"}
+const usage = `gomodgraph takes the output of "go mod graph" and prints it as a tree.
 
-	fp, err := zli.InputOrFile(zos.Arg(1), false)
+https://github.com/arp242/gomodgraph
+
+Usage:
+
+    % go mod graph | gomodgraph
+
+Flags:
+
+    -h, -help       Show this help.
+    -v, -version    Also show the version of modules.
+    -d, -depth      Set maximum depth to print.
+`
+
+func main() {
+	f := zli.NewFlags(os.Args)
+	var (
+		showVersion = f.Bool(false, "v", "version")
+		depth       = f.Int(0, "d", "depth")
+		help        = f.Bool(false, "h", "help")
+	)
+	zli.F(f.Parse())
+
+	if help.Bool() {
+		fmt.Println(usage)
+		return
+	}
+
+	fp, err := zli.InputOrFile(f.Shift(), false)
 	zli.F(err)
 	defer fp.Close()
 	scan := bufio.NewScanner(fp)
@@ -33,7 +57,7 @@ func main() {
 
 		// TODO: abbrev version in case it's not a tag
 		var pkg, dep string
-		if showVersion {
+		if showVersion.Bool() {
 			pkg = strings.Replace(s[0], "@", " ", -1)
 			dep = strings.Replace(s[1], "@", " ", -1)
 		} else {
@@ -63,39 +87,33 @@ func main() {
 		if p != root {
 			break
 		}
-		printpkg(p, packages, 0, "")
+		printpkg(p, packages, 0, nil, depth.Int(), 1)
 	}
 }
 
 const indent = "\t"
 
-func printpkg(p string, packages map[string][]string, i int, parent string) {
+// TODO: "// indirect" packages are listed here too as direct dependencies; this
+// is how go mod graph outputs it. Should filter those really.
+func printpkg(p string, packages map[string][]string, i int, parents []string, maxDepth, curDepth int) {
 	fmt.Printf("%s%s\n", strings.Repeat(indent, i), p)
+
+loop:
 	for _, d := range packages[p] {
-		/*
-		   golang.org/x/text
-		   	golang.org/x/tools
-		   		github.com/yuin/goldmark
-		   		golang.org/x/mod
-		   			golang.org/x/crypto
-		   			golang.org/x/net
-		   				golang.org/x/sys
-		   				golang.org/x/term
-		   					golang.org/x/sys
-		   				golang.org/x/text
-		*/
-		if strings.HasPrefix(d, "golang.org/x/") {
-			continue
+		for _, p := range parents {
+			if d == p {
+				continue loop
+			}
 		}
 
-		// x/net depends on x/crypto which depends on x/net
-		if d == parent {
-			continue
-		}
-
+		// Don't print dependencies for the golang.org/x/... packages as 1) many
+		// packages depend on them, and 2) many of them depend on each other.
+		// This leads to a huge amount of noise in the output.
 		_, ok := packages[d]
-		if ok {
-			printpkg(d, packages, i+1, p)
+		if ok && !strings.HasPrefix(d, "golang.org/x/") {
+			if maxDepth == 0 || curDepth < maxDepth {
+				printpkg(d, packages, i+1, append(parents, p), maxDepth, curDepth+1)
+			}
 		} else {
 			fmt.Printf("%s%s\n", strings.Repeat(indent, i+1), d)
 		}
