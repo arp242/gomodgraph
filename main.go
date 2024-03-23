@@ -162,6 +162,9 @@ loop:
 		if curDepth == 1 && zstring.Contains(indir, d) {
 			continue
 		}
+		if d == "go" || strings.HasPrefix(d, "go ") {
+			continue
+		}
 
 		for _, p := range parents {
 			if d == p {
